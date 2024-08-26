@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(puzzledpictures VERSION 0.1 LANGUAGES CXX)
+enable_testing()
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,11 +10,20 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-find_package(OpenCV REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
+)
+find_package(GTest)
+
+find_package(OpenCV 4.9 REQUIRED)
 message(${OpenCV_INCLUDE_DIRS})
+message(STATUS "OpenCV_VERSION: ${OpenCV_VERSION}")
 
 if(OpenCV_FOUND)
     include_directories(${OpenCV_INCLUDE_DIRS})
@@ -32,6 +42,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(puzzledpictures
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        tst_maintest.cpp
+        multiimageclass.h multiimageclass.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET puzzledpictures APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -51,7 +63,13 @@ else()
     endif()
 endif()
 
-target_link_libraries(puzzledpictures PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${OpenCV_LIBS})
+target_link_libraries(puzzledpictures PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    ${OpenCV_LIBS}
+    GTest::gtest
+    GTest::gtest_main
+    GTest::gmock
+    GTest::gmock_main)
 
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -82,3 +100,5 @@ get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTO
 foreach(dir ${dirs})
   message(STATUS "dir='${dir}'")
 endforeach()
+
+
