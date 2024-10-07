@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <opencv2/opencv.hpp>
 #include <QApplication>
+#include <QGraphicsView>
 #include "multiimageclass.h"
 
 using namespace cv;
@@ -22,22 +23,6 @@ int* constructRanges(int maxNumber, int bucketSize) {
     return buckets;
 }
 
-QImage matToQImage(const cv::Mat& mat)
-{
-    // Convert Mat to QImage
-    if (mat.type() == CV_8UC3)
-    {
-        cv::Mat rgb;
-        cv::cvtColor(mat, rgb, cv::COLOR_BGR2RGB);
-        return QImage(rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888).copy();
-    }
-    else if (mat.type() == CV_8UC1)
-    {
-        return QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Grayscale8).copy();
-    }
-    // Add more conversions as needed
-    return QImage();
-}
 
 vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
 {
@@ -58,17 +43,13 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
 
             puzzlePieces.push_back((*imageMatrix)(Range(y1, y2), Range(x1, x2)));
 
-        }
-    }
 
+        }}
     return puzzlePieces;
 }
 
 
-
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     // Read the image file as
     // imread("default.jpg");
     QApplication a(argc, argv);
@@ -79,10 +60,14 @@ int main(int argc, char *argv[])
     vector<Mat> puzzlePieces = sliceIntoNineSquares(&image);
 
 
-    MultiImageClass canvas;
-    canvas.setImages(puzzlePieces);
-    canvas.resize(800, 900);
-    canvas.show();
+    MultiImageClass canvas(900, 900);
+    QGraphicsView * view = canvas.setImages(puzzlePieces);
+
+    // Create a QMainWindow to contain the QGraphicsView
+    QMainWindow mainWindow;
+    mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
+    mainWindow.resize(1200, 1200); // Resize the window
+    mainWindow.show(); // Show the window
 
     // Error Handling
     if (image.empty()) {

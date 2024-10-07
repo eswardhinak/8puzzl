@@ -1,41 +1,55 @@
 #include "multiimageclass.h"
 #include <QPainter>
 
-MultiImageClass::MultiImageClass(QWidget *parent) : QWidget(parent) {}
+MultiImageClass::MultiImageClass(int height, int width): scene(new QGraphicsScene(QRectF(0, 0, width, height))) {}
 
-void MultiImageClass::setImages(const std::vector<cv::Mat>& images)
-{
-    m_images.clear();
-    for (const auto& mat : images)
-    {
-        QImage qimg = matToQImage(mat);
-        m_images.push_back(qimg);
-    }
-    update(); // Trigger a repaint
+MultiImageClass::~MultiImageClass() {
+    delete scene; // Clean up
 }
 
-void MultiImageClass::paintEvent(QPaintEvent* event)
+
+QGraphicsView * MultiImageClass::setImages(const std::vector<cv::Mat>& images)
 {
-    QPainter painter(this);
     int x = 0;
     int y = 0;
     int maxHeight = 0;
 
-    for (const auto& img : m_images)
-    {
-        painter.drawImage(x, y, img);
-        x += img.width() + 10; // Add some spacing between images
-        maxHeight = std::max(maxHeight, img.height());
+    // Define the size of the grid and the size of each square (cell)
+    int gridRows = 3;
+    int gridCols = 3;
 
-        // Move to next row if we're running out of width
-        if (x + img.width() > width())
-        {
+    int cellWidth = 300;  // Width of each square
+    int cellHeight = 300; // Height of each square
+
+    m_images.clear();
+    scene->clear();
+    for (const auto& mat : images)
+    {
+        std::cerr << images.size();
+        QImage qimg = matToQImage(mat);
+        QImage scaledQImg = qimg.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        m_images.push_back(scaledQImg);
+        QGraphicsPixmapItem * pixmapItem = new QGraphicsPixmapItem(QPixmap::fromImage(scaledQImg));
+        pixmapItem->setFlag(QGraphicsItem::ItemIsSelectable);
+        scene->addItem(pixmapItem);
+        std::cerr << x << " " << y << std::endl;
+        pixmapItem->setPos(x,y);
+        x += scaledQImg.width() + 10; // Add some spacing between images
+        maxHeight = std::max(maxHeight, scaledQImg.height());
+        if (x + scaledQImg.width() > scene->sceneRect().width()) {
             x = 0;
             y += maxHeight + 10; // Add some spacing between rows
             maxHeight = 0;
         }
     }
+    std::cerr << "Hum";
+    QGraphicsView * view = new QGraphicsView(scene);
+    view->setRenderHint(QPainter::Antialiasing); // Optional: Improve rendering quality
+    view->setMinimumSize(900, 900); // Set the minimum size of the view
+    return view;
 }
+
+
 
 QImage MultiImageClass::matToQImage(const cv::Mat& mat)
 {

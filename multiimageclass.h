@@ -1,19 +1,20 @@
 #pragma once
-#include <QWidget>
 #include <QImage>
+#include <QGraphicsScene>
 #include <vector>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsView>
+#include <QRectF>
 #include <opencv2/opencv.hpp>
 
-class MultiImageClass : public QWidget
+class MultiImageClass
 {
-    Q_OBJECT
 
 public:
-    MultiImageClass(QWidget *parent = nullptr);
-    void setImages(const std::vector<cv::Mat>& images);
-
-protected:
-    void paintEvent(QPaintEvent* event) override;
+    MultiImageClass(int height, int width);
+    QGraphicsView *  setImages(const std::vector<cv::Mat>& images);
+    QGraphicsScene * scene;
+    ~MultiImageClass();
 
 private:
     std::vector<QImage> m_images;
