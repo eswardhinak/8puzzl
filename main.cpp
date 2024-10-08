@@ -61,13 +61,14 @@ int main(int argc, char *argv[]) {
 
 
     MultiImageClass canvas(900, 900);
-    QGraphicsView * view = canvas.setImages(puzzlePieces);
+    QGraphicsView * view = canvas.startGame(puzzlePieces);
 
     // Create a QMainWindow to contain the QGraphicsView
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
     mainWindow.resize(1200, 1200); // Resize the window
     mainWindow.show(); // Show the window
+    canvas.move();
 
     // Error Handling
     if (image.empty()) {

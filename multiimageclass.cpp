@@ -1,31 +1,31 @@
 #include "multiimageclass.h"
 #include <QPainter>
 
-MultiImageClass::MultiImageClass(int height, int width): scene(new QGraphicsScene(QRectF(0, 0, width, height))) {}
+MultiImageClass::MultiImageClass(int height, int width):
+    scene(new QGraphicsScene(QRectF(0, 0, width, height))) {
+
+}
 
 MultiImageClass::~MultiImageClass() {
     delete scene; // Clean up
 }
 
-
-QGraphicsView * MultiImageClass::setImages(const std::vector<cv::Mat>& images)
+QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
 {
     int x = 0;
     int y = 0;
     int maxHeight = 0;
 
-    m_images.clear();
     scene->clear();
 
-    for (const auto& mat : images)
+    for (size_t i = 0; i < images.size()-1; ++i)
     {
+        const auto& mat = images[i];
         QImage qimg = matToQImage(mat);
         QImage scaledQImg = qimg.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        m_images.push_back(scaledQImg);
-
-
         GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg));
+        solution.push_back(pixmapItem);	// store the pixmap
+
         pixmapItem->setFlag(QGraphicsItem::ItemIsSelectable);
         scene->addItem(pixmapItem);
         pixmapItem->setPos(x,y);
@@ -46,6 +46,9 @@ QGraphicsView * MultiImageClass::setImages(const std::vector<cv::Mat>& images)
     return view;
 }
 
+void MultiImageClass::move() {
+    solution.at(4)->setPos(0, 100);
+}
 
 
 QImage MultiImageClass::matToQImage(const cv::Mat& mat)

@@ -13,11 +13,13 @@ class MultiImageClass
 
 public:
     MultiImageClass(int height, int width);
-    QGraphicsView *  setImages(const std::vector<cv::Mat>& images);
+    QGraphicsView * startGame(const std::vector<cv::Mat>& images);
     QGraphicsScene * scene;
     ~MultiImageClass();
+    void move();
 
 private:
-    std::vector<QImage> m_images;
+    std::vector<GameTilePixMapItem*> solution;
     QImage matToQImage(const cv::Mat& mat);
+
 };
