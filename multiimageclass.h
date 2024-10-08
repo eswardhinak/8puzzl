@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 #include <vector>
 #include <QGraphicsPixmapItem>
+#include "gametilepixmapitem.h"
 #include <QGraphicsView>
 #include <QRectF>
 #include <opencv2/opencv.hpp>

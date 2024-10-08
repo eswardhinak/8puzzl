@@ -14,37 +14,34 @@ QGraphicsView * MultiImageClass::setImages(const std::vector<cv::Mat>& images)
     int y = 0;
     int maxHeight = 0;
 
-    // Define the size of the grid and the size of each square (cell)
-    int gridRows = 3;
-    int gridCols = 3;
-
-    int cellWidth = 300;  // Width of each square
-    int cellHeight = 300; // Height of each square
-
     m_images.clear();
     scene->clear();
+
     for (const auto& mat : images)
     {
-        std::cerr << images.size();
         QImage qimg = matToQImage(mat);
         QImage scaledQImg = qimg.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
         m_images.push_back(scaledQImg);
-        QGraphicsPixmapItem * pixmapItem = new QGraphicsPixmapItem(QPixmap::fromImage(scaledQImg));
+
+
+        GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg));
         pixmapItem->setFlag(QGraphicsItem::ItemIsSelectable);
         scene->addItem(pixmapItem);
-        std::cerr << x << " " << y << std::endl;
         pixmapItem->setPos(x,y);
-        x += scaledQImg.width() + 10; // Add some spacing between images
+
+        // Add spacing and update locations
+        x += scaledQImg.width() + 10;
         maxHeight = std::max(maxHeight, scaledQImg.height());
         if (x + scaledQImg.width() > scene->sceneRect().width()) {
             x = 0;
-            y += maxHeight + 10; // Add some spacing between rows
+            y += maxHeight + 10; // Add spacing and update locations
             maxHeight = 0;
         }
     }
-    std::cerr << "Hum";
+
     QGraphicsView * view = new QGraphicsView(scene);
-    view->setRenderHint(QPainter::Antialiasing); // Optional: Improve rendering quality
+    view->setRenderHint(QPainter::Antialiasing); // Improve rendering quality
     view->setMinimumSize(900, 900); // Set the minimum size of the view
     return view;
 }
