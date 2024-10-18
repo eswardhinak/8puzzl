@@ -1,4 +1,5 @@
 #include "multiimageclass.h"
+#include "boardstate.h"
 #include <QPainter>
 
 MultiImageClass::MultiImageClass(int height, int width):
@@ -23,7 +24,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
         const auto& mat = images[i];
         QImage qimg = matToQImage(mat);
         QImage scaledQImg = qimg.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg));
+        GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i);
         solution.push_back(pixmapItem);	// store the pixmap
 
         pixmapItem->setFlag(QGraphicsItem::ItemIsSelectable);
@@ -39,6 +40,8 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
             maxHeight = 0;
         }
     }
+    solution.push_back(nullptr);
+    BoardState * boardState = new BoardState(solution, solution);
 
     QGraphicsView * view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing); // Improve rendering quality

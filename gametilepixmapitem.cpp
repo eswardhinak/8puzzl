@@ -1,7 +1,6 @@
-
 #include "gametilepixmapitem.h"
 
-GameTilePixMapItem::GameTilePixMapItem(const QPixmap &pixmap) : QGraphicsPixmapItem(pixmap) {
+GameTilePixMapItem::GameTilePixMapItem(const QPixmap &pixmap, int initialIndex) : QGraphicsPixmapItem(pixmap) {
     setAcceptHoverEvents(true);
 }
 
@@ -40,4 +39,12 @@ void GameTilePixMapItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
 void GameTilePixMapItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     qDebug() << "Mouse left the item!";
     QGraphicsPixmapItem::hoverLeaveEvent(event);
+}
+
+int GameTilePixMapItem::getCurrentIndex() {
+    return currentIndex;
+}
+
+int GameTilePixMapItem::getInitialIndex() {
+    return initialIndex;
 }

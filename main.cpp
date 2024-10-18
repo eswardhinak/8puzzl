@@ -68,7 +68,6 @@ int main(int argc, char *argv[]) {
     mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
     mainWindow.resize(1200, 1200); // Resize the window
     mainWindow.show(); // Show the window
-    canvas.move();
 
     // Error Handling
     if (image.empty()) {
