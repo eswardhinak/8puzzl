@@ -6,8 +6,8 @@ class BoardState
 {
 public:
     BoardState(std::vector<GameTilePixMapItem*> solution, std::vector<GameTilePixMapItem*> current);
-    void BoardState::setSolution(std::vector<GameTilePixMapItem*> solution);
-    void BoardState::setCurrent(std::vector<GameTilePixMapItem*> current);
+    void setSolution(std::vector<GameTilePixMapItem*> solution);
+    void setCurrent(std::vector<GameTilePixMapItem*> current);
 private:
     std::vector<GameTilePixMapItem*> solution;
     std::vector<GameTilePixMapItem*> current;

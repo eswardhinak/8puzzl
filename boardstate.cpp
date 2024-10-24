@@ -4,9 +4,9 @@ BoardState::BoardState(std::vector<GameTilePixMapItem*> solution, std::vector<Ga
     this->current = current;
     this->solution = solution;
 }
-BoardState::BoardState() {
+// BoardState::BoardState() {
 
-}
+// }
 void BoardState::setSolution(std::vector<GameTilePixMapItem*> solution) {
     this->solution = solution;
 }

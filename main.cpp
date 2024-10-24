@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
     mainWindow.show(); // Show the window
 
     // Error Handling
+    // swars world
     if (image.empty()) {
         cout << "Image File "
              << "Not Found" << endl;
