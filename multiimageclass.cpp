@@ -23,7 +23,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     {
         const auto& mat = images[i];
         QImage qimg = matToQImage(mat);
-        QImage scaledQImg = qimg.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QImage scaledQImg = qimg.scaled(SQUARE_LEN, SQUARE_LEN, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i);
         solution.push_back(pixmapItem);	// store the pixmap
 
@@ -32,11 +32,11 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
         pixmapItem->setPos(x,y);
 
         // Add spacing and update locations
-        x += scaledQImg.width() + 10;
+        x += scaledQImg.width() + PADDING;
         maxHeight = std::max(maxHeight, scaledQImg.height());
         if (x + scaledQImg.width() > scene->sceneRect().width()) {
             x = 0;
-            y += maxHeight + 10; // Add spacing and update locations
+            y += maxHeight + PADDING; // Add spacing and update locations
             maxHeight = 0;
         }
     }
@@ -49,8 +49,17 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     return view;
 }
 
-void MultiImageClass::move() {
-    solution.at(4)->setPos(0, 100);
+void MultiImageClass::swap(int idx_old, int idx_new) {
+    int x_old = idx_old % 3;
+    int y_old = idx_old / 3;
+    int x = idx_new % 3;
+    int y = idx_new / 3;
+    x_old = x_old == 0 ? x_old : x_old + PADDING;
+    y_old = y_old == 0 ? y_old : y_old + PADDING;
+    x = x == 0 ? x : x + PADDING;
+    y = y == 0 ? y : y + PADDING;
+    solution.at(idx_old)->setPos(x*SQUARE_LEN, y*SQUARE_LEN);
+    solution.at(idx_new)->setPos(x_old*SQUARE_LEN, y_old*SQUARE_LEN);
 }
 
 
@@ -70,3 +79,4 @@ QImage MultiImageClass::matToQImage(const cv::Mat& mat)
     // Add more conversions as needed
     return QImage();
 }
+

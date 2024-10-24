@@ -32,7 +32,12 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
     int cell_width = cols / 3;
 
     vector<Mat> puzzlePieces;
-    puzzlePieces.reserve(9);  // Reserve space for 9 elements
+    puzzlePieces.reserve(
+
+
+
+
+        9);  // Reserve space for 9 elements
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
@@ -66,8 +71,11 @@ int main(int argc, char *argv[]) {
     // Create a QMainWindow to contain the QGraphicsView
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
-    mainWindow.resize(1200, 1200); // Resize the window
+    mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3); // Resize the window
     mainWindow.show(); // Show the window
+    //canvas.swap(0, 0);
+    //canvas.swap(3, 0);
+    //canvas.swap(1, 2);
 
     // Error Handling
     // swars world
