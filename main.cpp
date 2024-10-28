@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     mainWindow.show(); // Show the window
     //canvas.swap(0, 0);
     //canvas.swap(3, 0);
-    //canvas.swap(1, 2);
+    canvas.swap(0,8);
 
     // Error Handling
     // swars world

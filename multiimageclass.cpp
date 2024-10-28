@@ -1,6 +1,7 @@
 #include "multiimageclass.h"
 #include "boardstate.h"
 #include <QPainter>
+#include <QPointF>
 
 MultiImageClass::MultiImageClass(int height, int width):
     scene(new QGraphicsScene(QRectF(0, 0, width, height))) {
@@ -11,36 +12,55 @@ MultiImageClass::~MultiImageClass() {
     delete scene; // Clean up
 }
 
+QPixmap MultiImageClass::createEmptyItem(int width, int height) {
+    // Step 1: Create a white QPixmap
+    QPixmap whitePixmap = QPixmap(width, height);
+    whitePixmap.fill(Qt::white);  // Fill with white color
+    return whitePixmap;
+}
 QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
 {
     int x = 0;
     int y = 0;
     int maxHeight = 0;
 
+    int width = 0;
+    int height = 0;
+
     scene->clear();
 
-    for (size_t i = 0; i < images.size()-1; ++i)
+    for (size_t i = 0; i < images.size(); ++i)
     {
-        const auto& mat = images[i];
-        QImage qimg = matToQImage(mat);
-        QImage scaledQImg = qimg.scaled(SQUARE_LEN, SQUARE_LEN, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        GameTilePixMapItem * pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i);
+        GameTilePixMapItem * pixmapItem = nullptr;
+
+        if (i < images.size()-1){
+            const auto& mat = images[i];
+            QImage qimg = matToQImage(mat);
+            QImage scaledQImg = qimg.scaled(SQUARE_LEN, SQUARE_LEN, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            if (i == 0) {
+                width = scaledQImg.width();
+                height = scaledQImg.height();
+            }
+            std::cout << scaledQImg.width() << " " << scaledQImg.height() << std::endl;
+            pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i);
+        } else {
+            pixmapItem = new GameTilePixMapItem(this->createEmptyItem(width, height), images.size()-1);
+        }
         solution.push_back(pixmapItem);	// store the pixmap
 
         pixmapItem->setFlag(QGraphicsItem::ItemIsSelectable);
         scene->addItem(pixmapItem);
         pixmapItem->setPos(x,y);
 
-        // Add spacing and update locations
-        x += scaledQImg.width() + PADDING;
-        maxHeight = std::max(maxHeight, scaledQImg.height());
-        if (x + scaledQImg.width() > scene->sceneRect().width()) {
+
+        x += width + PADDING;
+        maxHeight = std::max(maxHeight,height);
+        if (x + width > scene->sceneRect().width()) {
             x = 0;
             y += maxHeight + PADDING; // Add spacing and update locations
             maxHeight = 0;
         }
     }
-    solution.push_back(nullptr);
     BoardState * boardState = new BoardState(solution, solution);
 
     QGraphicsView * view = new QGraphicsView(scene);
@@ -49,17 +69,13 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     return view;
 }
 
-void MultiImageClass::swap(int idx_old, int idx_new) {
-    int x_old = idx_old % 3;
-    int y_old = idx_old / 3;
-    int x = idx_new % 3;
-    int y = idx_new / 3;
-    x_old = x_old == 0 ? x_old : x_old + PADDING;
-    y_old = y_old == 0 ? y_old : y_old + PADDING;
-    x = x == 0 ? x : x + PADDING;
-    y = y == 0 ? y : y + PADDING;
-    solution.at(idx_old)->setPos(x*SQUARE_LEN, y*SQUARE_LEN);
-    solution.at(idx_new)->setPos(x_old*SQUARE_LEN, y_old*SQUARE_LEN);
+void MultiImageClass::swap(int idx_old, int idx_new)
+{
+
+    QPointF tmp = solution[idx_old]->pos();
+
+    solution[idx_old]->setPos(solution[idx_new]->pos());
+    solution[idx_new]->setPos(tmp);
 }
 
 

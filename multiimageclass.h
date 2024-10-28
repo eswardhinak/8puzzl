@@ -1,5 +1,6 @@
 #pragma once
 #include <QImage>
+#include <QPixmap>
 #include <QGraphicsScene>
 #include <vector>
 #include <QGraphicsPixmapItem>
@@ -25,5 +26,6 @@ public:
 private:
     std::vector<GameTilePixMapItem*> solution;
     QImage matToQImage(const cv::Mat& mat);
+    QPixmap createEmptyItem(int, int);
 
 };

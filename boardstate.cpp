@@ -6,7 +6,7 @@ BoardState::BoardState(std::vector<GameTilePixMapItem*> solution, std::vector<Ga
 }
 // BoardState::BoardState() {
 
-// }
+
 void BoardState::setSolution(std::vector<GameTilePixMapItem*> solution) {
     this->solution = solution;
 }
