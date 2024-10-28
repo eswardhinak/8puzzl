@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     // imread("default.jpg");
     QApplication a(argc, argv);
 
-    Mat image = imread("/Users/eswar/desktop/india_passport.jpeg");
+    Mat image = imread("/Users/eswar/desktop/katie.jpeg");
     cout << "Image type: " << image.type() << endl;
     cout << "Rows: " << image.rows << "\nCols: " << image.cols << endl;
     vector<Mat> puzzlePieces = sliceIntoNineSquares(&image);

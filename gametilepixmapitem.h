@@ -13,6 +13,7 @@ public:
     GameTilePixMapItem(const QPixmap &pixmap, int initialIndex, BoardState * boardState);
     int getInitialIndex();
     int getCurrentIndex();
+    void setCurrentIndex(int);
 
 protected:
     // Event handlers for mouse and hover events
