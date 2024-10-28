@@ -29,6 +29,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
 
     scene->clear();
 
+    boardState = new BoardState();
     for (size_t i = 0; i < images.size(); ++i)
     {
         GameTilePixMapItem * pixmapItem = nullptr;
@@ -42,9 +43,9 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
                 height = scaledQImg.height();
             }
             std::cout << scaledQImg.width() << " " << scaledQImg.height() << std::endl;
-            pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i);
+            pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i, boardState);
         } else {
-            pixmapItem = new GameTilePixMapItem(this->createEmptyItem(width, height), images.size()-1);
+            pixmapItem = new GameTilePixMapItem(this->createEmptyItem(width, height), images.size()-1, boardState);
         }
         solution.push_back(pixmapItem);	// store the pixmap
 
@@ -61,7 +62,9 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
             maxHeight = 0;
         }
     }
-    boardState = new BoardState(solution, solution);
+
+    boardState->setSolution(solution);
+    boardState->setCurrent(solution);
 
     QGraphicsView * view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing); // Improve rendering quality

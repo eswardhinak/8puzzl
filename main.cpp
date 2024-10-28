@@ -74,7 +74,6 @@ int main(int argc, char *argv[]) {
     mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3); // Resize the window
     mainWindow.show(); // Show the window
 
-    canvas.getBoardState()->swap(0, 8);
 
     // Error Handling
     // swars world

@@ -1,6 +1,7 @@
 #include "gametilepixmapitem.h"
+#include "BoardState.h"
 
-GameTilePixMapItem::GameTilePixMapItem(const QPixmap &pixmap, int initialIndex) : QGraphicsPixmapItem(pixmap) {
+GameTilePixMapItem::GameTilePixMapItem(const QPixmap &pixmap, int initialIndex, BoardState * boardState) : QGraphicsPixmapItem(pixmap), boardState(boardState), initialIndex(initialIndex) {
     setAcceptHoverEvents(true);
 }
 
@@ -9,6 +10,7 @@ void GameTilePixMapItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     std::cout << "Mouse press" << std::endl;
     if (event->button() == Qt::LeftButton) {
         qDebug() << "Left mouse button clicked on the item!";
+        boardState->swap(initialIndex, 8);	//currently swaps seleted one with empty space. Not desired behavior
     } else if (event->button() == Qt::RightButton) {
         qDebug() << "Right mouse button clicked on the item!";
     }
