@@ -13,3 +13,14 @@ void BoardState::setSolution(std::vector<GameTilePixMapItem*> solution) {
 void BoardState::setCurrent(std::vector<GameTilePixMapItem*> current) {
     this->current = current;
 }
+
+void BoardState::swap(int indexA, int indexB) {
+    QPointF tmp = solution[indexA]->pos();
+
+    solution[indexA]->setPos(solution[indexB]->pos());
+    solution[indexB]->setPos(tmp);
+
+    GameTilePixMapItem* temp = current[indexA];
+    current[indexA] = current[indexB];
+    current[indexB] = temp;
+}

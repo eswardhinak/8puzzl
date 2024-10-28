@@ -7,6 +7,7 @@
 #include "gametilepixmapitem.h"
 #include <QGraphicsView>
 #include <QRectF>
+#include "boardstate.h"
 #include <opencv2/opencv.hpp>
 
 const int SQUARE_LEN = 300;
@@ -22,10 +23,11 @@ public:
     QGraphicsScene * scene;
     ~MultiImageClass();
     void swap(int idx, int idx_new);
+    BoardState * getBoardState();
 
 private:
     std::vector<GameTilePixMapItem*> solution;
     QImage matToQImage(const cv::Mat& mat);
     QPixmap createEmptyItem(int, int);
-
+    BoardState * boardState;
 };

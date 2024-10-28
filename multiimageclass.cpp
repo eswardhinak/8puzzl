@@ -5,7 +5,7 @@
 
 MultiImageClass::MultiImageClass(int height, int width):
     scene(new QGraphicsScene(QRectF(0, 0, width, height))) {
-
+    boardState = nullptr;
 }
 
 MultiImageClass::~MultiImageClass() {
@@ -61,7 +61,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
             maxHeight = 0;
         }
     }
-    BoardState * boardState = new BoardState(solution, solution);
+    boardState = new BoardState(solution, solution);
 
     QGraphicsView * view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing); // Improve rendering quality
@@ -69,15 +69,19 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     return view;
 }
 
-void MultiImageClass::swap(int idx_old, int idx_new)
-{
+// void MultiImageClass::swap(int idx_old, int idx_new)
+// {
 
-    QPointF tmp = solution[idx_old]->pos();
+//     QPointF tmp = solution[idx_old]->pos();
 
-    solution[idx_old]->setPos(solution[idx_new]->pos());
-    solution[idx_new]->setPos(tmp);
+//     solution[idx_old]->setPos(solution[idx_new]->pos());
+//     solution[idx_new]->setPos(tmp);
+
+// }
+
+BoardState * MultiImageClass::getBoardState() {
+    return boardState;
 }
-
 
 QImage MultiImageClass::matToQImage(const cv::Mat& mat)
 {

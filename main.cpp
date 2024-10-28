@@ -73,9 +73,8 @@ int main(int argc, char *argv[]) {
     mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
     mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3); // Resize the window
     mainWindow.show(); // Show the window
-    //canvas.swap(0, 0);
-    //canvas.swap(3, 0);
-    canvas.swap(0,8);
+
+    canvas.getBoardState()->swap(0, 8);
 
     // Error Handling
     // swars world

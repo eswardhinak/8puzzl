@@ -8,6 +8,7 @@ public:
     BoardState(std::vector<GameTilePixMapItem*> solution, std::vector<GameTilePixMapItem*> current);
     void setSolution(std::vector<GameTilePixMapItem*> solution);
     void setCurrent(std::vector<GameTilePixMapItem*> current);
+    void swap(int indexA, int indexB);
 private:
     std::vector<GameTilePixMapItem*> solution;
     std::vector<GameTilePixMapItem*> current;
