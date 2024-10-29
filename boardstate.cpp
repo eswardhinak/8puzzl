@@ -35,7 +35,6 @@ bool BoardState::solutionReached() {
 int BoardState::getShuffleIndex() {
     int whitespace_x = whiteSpaceIndex / 3;
     int whitespace_y = whiteSpaceIndex % 3;
-    std::cout<<"We out here"<<std::endl;
     std::vector<int> valid_shuffles;
     for (int i = 0; i < this->current.size(); i++) {
         int index_x = i / 3;
@@ -49,8 +48,6 @@ int BoardState::getShuffleIndex() {
     std::uniform_int_distribution<> distrib(0, valid_shuffles.size()-1);  // Range: [1, 100]
     int random_number = distrib(gen);
 
-    std::cout<<"Valid shuffles size: " << valid_shuffles.size();
-    std::cout<<"Random: "<<random_number<<std::endl;
 
     return valid_shuffles.at(random_number);
 }
@@ -76,9 +73,6 @@ void BoardState::placeHiddenTileIfGameOver() {
 }
 
 bool BoardState::swap(int index, bool checkSolution) {
-    std::cout<<"Current Index: " << index << ", Whitespace index: "  << whiteSpaceIndex << std::endl;
-    // need to make it so it swaps the correct index. indexB is always passed in as 8.
-
 
     if (whiteSpaceIndex < 0) {
         //hacky to stop swapping after game over
@@ -94,10 +88,9 @@ bool BoardState::swap(int index, bool checkSolution) {
     int whitespace_x = whiteSpaceIndex / 3;
     int whitespace_y = whiteSpaceIndex % 3;
 
-    std::cout << index_x << " "  << index_y << " " <<  whitespace_x << " " << whitespace_y << std::endl;
 
     if (abs(index_x - whitespace_x) + abs(index_y - whitespace_y) == 1) {
-        std::cout << "Valid move" << std::endl;
+    // Valid Move
 
         QPointF tmp = current[index]->pos();
         current[index]->setPos(current[whiteSpaceIndex]->pos());
@@ -119,6 +112,7 @@ bool BoardState::swap(int index, bool checkSolution) {
     else {
         std::cout << "Not valid move." << std::endl;
     }
+
     if (checkSolution){
         placeHiddenTileIfGameOver();
     }

@@ -28,8 +28,17 @@ message(STATUS "OpenCV_VERSION: ${OpenCV_VERSION}")
 if(OpenCV_FOUND)
     include_directories(${OpenCV_INCLUDE_DIRS})
 else()
-    message(FATAL_ERROR "OpenCV not found. Please make sure it is installed.")
+    message(STATUS "OpenCV not found, using FetchContent to download it.")
+        FetchContent_Declare(
+          opencv
+          GIT_REPOSITORY https://github.com/opencv/opencv.git
+          GIT_TAG 4.x  # You can set a specific tag like 4.9.0
+        )
+        FetchContent_MakeAvailable(opencv)
+        set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui) # Add required OpenCV libraries
 endif()
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+
 
 set(PROJECT_SOURCES
         main.cpp

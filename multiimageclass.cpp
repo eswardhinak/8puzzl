@@ -43,7 +43,6 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
             height = scaledQImg.height();
         }
         if (i < images.size()-1){
-            std::cout << scaledQImg.width() << " " << scaledQImg.height() << std::endl;
             pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i, boardState);
         } else {    
             pixmapItem = new GameTilePixMapItem(this->createEmptyItem(width, height), images.size()-1, boardState);
@@ -74,15 +73,6 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     return view;
 }
 
-// void MultiImageClass::swap(int idx_old, int idx_new)
-// {
-
-//     QPointF tmp = solution[idx_old]->pos();
-
-//     solution[idx_old]->setPos(solution[idx_new]->pos());
-//     solution[idx_new]->setPos(tmp);
-
-// }
 
 BoardState * MultiImageClass::getBoardState() {
     return boardState;
