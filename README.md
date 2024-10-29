@@ -4,6 +4,9 @@ C++ implementation of the classic 8-puzzle game (https://en.wikipedia.org/wiki/S
 Uses an image from your photo library.
 
 ## Todo:
+10/30:
+1. Turn into command. 8puzzl <image path>
+
 
 
 10/29
