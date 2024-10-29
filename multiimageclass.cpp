@@ -35,18 +35,19 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     {
         GameTilePixMapItem * pixmapItem = nullptr;
 
+        const auto& mat = images[i];
+        QImage qimg = matToQImage(mat);
+        QImage scaledQImg = qimg.scaled(SQUARE_LEN, SQUARE_LEN, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if (i == 0) {
+            width = scaledQImg.width();
+            height = scaledQImg.height();
+        }
         if (i < images.size()-1){
-            const auto& mat = images[i];
-            QImage qimg = matToQImage(mat);
-            QImage scaledQImg = qimg.scaled(SQUARE_LEN, SQUARE_LEN, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            if (i == 0) {
-                width = scaledQImg.width();
-                height = scaledQImg.height();
-            }
             std::cout << scaledQImg.width() << " " << scaledQImg.height() << std::endl;
             pixmapItem = new GameTilePixMapItem(QPixmap::fromImage(scaledQImg), i, boardState);
-        } else {
+        } else {    
             pixmapItem = new GameTilePixMapItem(this->createEmptyItem(width, height), images.size()-1, boardState);
+            boardState->setHiddenTile(QPixmap::fromImage(scaledQImg)); // passing by value, might be more efficient to pointer this and manage memory
         }
         solution.push_back(pixmapItem);	// store the pixmap
 

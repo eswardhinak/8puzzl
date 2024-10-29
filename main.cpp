@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     mainWindow.show(); // Show the window
 
     // shuffle
-    canvas.getBoardState()->shuffle(50);
+    canvas.getBoardState()->shuffle(31);
 
     // Error Handling
     // swars world

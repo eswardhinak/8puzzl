@@ -49,6 +49,7 @@ int BoardState::getShuffleIndex() {
     std::uniform_int_distribution<> distrib(0, valid_shuffles.size()-1);  // Range: [1, 100]
     int random_number = distrib(gen);
 
+    std::cout<<"Valid shuffles size: " << valid_shuffles.size();
     std::cout<<"Random: "<<random_number<<std::endl;
 
     return valid_shuffles.at(random_number);
@@ -59,14 +60,30 @@ void BoardState::shuffle(int moves) {
         throw std::runtime_error("Negative number of moves not allowed in shuffle");
     }
     for (int i = 0; i < moves; i++) {
-        this->swap(this->getShuffleIndex());
+        this->swap(this->getShuffleIndex(), false);
     }
 }
 
+void BoardState::setHiddenTile(QPixmap hiddenTile) {
+    this->hiddenTile = hiddenTile;
+}
 
-bool BoardState::swap(int index) {
+void BoardState::placeHiddenTileIfGameOver() {
+    if (this->solutionReached()) {
+        current.at(whiteSpaceIndex)->setPixmap(this->hiddenTile);
+        whiteSpaceIndex = -100; // hacky, sets this to a really high negative value so nothing can be swapped
+    }
+}
+
+bool BoardState::swap(int index, bool checkSolution) {
     std::cout<<"Current Index: " << index << ", Whitespace index: "  << whiteSpaceIndex << std::endl;
     // need to make it so it swaps the correct index. indexB is always passed in as 8.
+
+
+    if (whiteSpaceIndex < 0) {
+        //hacky to stop swapping after game over
+        return false;
+    }
     if (index == whiteSpaceIndex) {
         return false;
     }
@@ -102,10 +119,12 @@ bool BoardState::swap(int index) {
     else {
         std::cout << "Not valid move." << std::endl;
     }
-
-    if (this->solutionReached()){
-        std::cout<< "Solution Reached" << std::endl;
+    if (checkSolution){
+        placeHiddenTileIfGameOver();
     }
     return true;
+}
 
+bool BoardState::swap(int index) {
+    return this->swap(index, true);
 }

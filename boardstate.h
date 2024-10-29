@@ -1,8 +1,10 @@
 #ifndef BOARDSTATE_H
 #define BOARDSTATE_H
-#include "gametilepixmapitem.h"
+#include <QPixmap>
 #include <unordered_set>
 #include <utility>
+#include "gametilepixmapitem.h"
+
 
 class BoardState
 {
@@ -14,9 +16,11 @@ public:
     void setCurrent(std::vector<GameTilePixMapItem*> current);
     void shuffle(int moves);
     bool swap(int index);
+    bool swap(int index, bool checkSolution);
     int getSelected();
     void setSelected();
     void shuffle();
+    void setHiddenTile(QPixmap);
 private:
     std::vector<GameTilePixMapItem*> solution;
     std::vector<GameTilePixMapItem*> current;
@@ -25,6 +29,8 @@ private:
     bool solutionReached();
     int getShuffleIndex();
     std::vector<std::pair<int, int>> * coords;
+    QPixmap hiddenTile;
+    void placeHiddenTileIfGameOver();
 };
 
 #endif // BOARDSTATE_H
