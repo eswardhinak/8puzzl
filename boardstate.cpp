@@ -1,14 +1,19 @@
 #include <cmath>
+#include <utility>
 #include "boardstate.h"
+#include <random>
+
 
 BoardState::BoardState(std::vector<GameTilePixMapItem*> solution, std::vector<GameTilePixMapItem*> current) {
     this->current = current;
     this->solution = solution;
 }
 
-BoardState::BoardState() {}
+BoardState::~BoardState() {
+    // delete all gamepix items and delete current and solution
+}
 
-// BoardState::BoardState() {
+BoardState::BoardState() {}
 
 
 void BoardState::setSolution(std::vector<GameTilePixMapItem*> solution) {
@@ -18,9 +23,46 @@ void BoardState::setCurrent(std::vector<GameTilePixMapItem*> current) {
     this->current = current;
 }
 
-// bool BoardState::solutionReached() {
+bool BoardState::solutionReached() {
+    for (int i = 0; i < solution.size(); i++) {
+        if (solution.at(i)->getCurrentIndex() != i) {
+            return false;
+        }
+    }
+    return true;
+}
 
-// }
+int BoardState::getShuffleIndex() {
+    int whitespace_x = whiteSpaceIndex / 3;
+    int whitespace_y = whiteSpaceIndex % 3;
+    std::cout<<"We out here"<<std::endl;
+    std::vector<int> valid_shuffles;
+    for (int i = 0; i < this->current.size(); i++) {
+        int index_x = i / 3;
+        int index_y = i % 3;
+        if (abs(index_x - whitespace_x) + abs(index_y - whitespace_y) == 1) {
+            valid_shuffles.push_back(i);
+        }
+    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, valid_shuffles.size()-1);  // Range: [1, 100]
+    int random_number = distrib(gen);
+
+    std::cout<<"Random: "<<random_number<<std::endl;
+
+    return valid_shuffles.at(random_number);
+}
+
+void BoardState::shuffle(int moves) {
+    if (moves < 0) {
+        throw std::runtime_error("Negative number of moves not allowed in shuffle");
+    }
+    for (int i = 0; i < moves; i++) {
+        this->swap(this->getShuffleIndex());
+    }
+}
+
 
 bool BoardState::swap(int index) {
     std::cout<<"Current Index: " << index << ", Whitespace index: "  << whiteSpaceIndex << std::endl;
@@ -29,7 +71,6 @@ bool BoardState::swap(int index) {
         return false;
     }
 
-    auto tmp = current[index];
 
     int index_x = index / 3;
     int index_y = index % 3;
@@ -62,14 +103,9 @@ bool BoardState::swap(int index) {
         std::cout << "Not valid move." << std::endl;
     }
 
-
-    // for (size_t i = 0; i < solution.size(); ++i) {
-    //     std::cout << solution[i]->getInitialIndex() << " " << current[i]->getInitialIndex() << std::endl;
-    // }
-    // std::cout << std::endl;
-
-    // std::cout<< "address of solution: " << &solution << std::endl;
-    // std::cout<< "address of solution[0]: " << &solution[0] <<  "   address of solution[5]: " << &solution[5] << std::endl;
-    // std::cout <<"address of current: " << &current << std::endl;
+    if (this->solutionReached()){
+        std::cout<< "Solution Reached" << std::endl;
+    }
+    return true;
 
 }

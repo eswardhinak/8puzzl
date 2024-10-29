@@ -46,6 +46,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         multiimageclass.h multiimageclass.cpp
         gametilepixmapitem.h gametilepixmapitem.cpp
         boardstate.h boardstate.cpp
+        README.md
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET puzzledpictures APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

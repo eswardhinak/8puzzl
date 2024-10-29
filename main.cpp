@@ -32,12 +32,7 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
     int cell_width = cols / 3;
 
     vector<Mat> puzzlePieces;
-    puzzlePieces.reserve(
-
-
-
-
-        9);  // Reserve space for 9 elements
+    puzzlePieces.reserve(9);  // Reserve space for 9 elements
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
@@ -45,21 +40,21 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
             int y2 = (i < 2) ? (i + 1) * cell_height : rows;
             int x1 = j * cell_width;
             int x2 = (j < 2) ? (j + 1) * cell_width : cols;
-
             puzzlePieces.push_back((*imageMatrix)(Range(y1, y2), Range(x1, x2)));
-
-
         }}
     return puzzlePieces;
 }
 
 
 int main(int argc, char *argv[]) {
+
+
+    // need to check with katie-ahegao didn't work
     // Read the image file as
     // imread("default.jpg");
     QApplication a(argc, argv);
 
-    Mat image = imread("/Users/eswar/desktop/katie.jpeg");
+    Mat image = imread("/Users/eswar/desktop/katie-eswar.jpg");
     cout << "Image type: " << image.type() << endl;
     cout << "Rows: " << image.rows << "\nCols: " << image.cols << endl;
     vector<Mat> puzzlePieces = sliceIntoNineSquares(&image);
@@ -74,6 +69,8 @@ int main(int argc, char *argv[]) {
     mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3); // Resize the window
     mainWindow.show(); // Show the window
 
+    // shuffle
+    canvas.getBoardState()->shuffle(50);
 
     // Error Handling
     // swars world

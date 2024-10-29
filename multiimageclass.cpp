@@ -30,6 +30,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
     scene->clear();
 
     boardState = new BoardState();
+
     for (size_t i = 0; i < images.size(); ++i)
     {
         GameTilePixMapItem * pixmapItem = nullptr;
@@ -56,7 +57,7 @@ QGraphicsView * MultiImageClass::startGame(const std::vector<cv::Mat>& images)
 
         x += width + PADDING;
         maxHeight = std::max(maxHeight,height);
-        if (x + width > scene->sceneRect().width()) {
+        if (i%3 == 2) {
             x = 0;
             y += maxHeight + PADDING; // Add spacing and update locations
             maxHeight = 0;
