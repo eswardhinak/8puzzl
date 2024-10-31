@@ -1,11 +1,15 @@
 #include "mainwindow.h"
 #include <opencv2/opencv.hpp>
 #include <QApplication>
+#include <filesystem>
 #include <QGraphicsView>
 #include "multiimageclass.h"
 
+
 using namespace cv;
 using namespace std;
+namespace fs = std::filesystem;
+
 
 int* constructRanges(int maxNumber, int bucketSize) {
     int * buckets = new int[maxNumber/bucketSize];
@@ -47,14 +51,30 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
 
 
 int main(int argc, char *argv[]) {
+    fs::path filepath;
+    try {
+        if (argc != 2) {
+            std::cerr << "Usage: " << argv[0] << "<filepath>\n";
+            return 1;
+        }
+        fs::path filepath = argv[1];
 
+        if (!fs::exists(filepath)) {
+            std::cerr << "Error: Path doesn't exist\n";
+            return 1;
+        }
 
-    // need to check with katie-ahegao didn't work
+        std::cout << "Full path: " << filepath << "\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+
     // Read the image file as
     // imread("default.jpg");
     QApplication a(argc, argv);
 
-    Mat image = imread("/Users/eswar/desktop/katie-eswar.jpg");
+    Mat image = imread(filepath.string());
     cout << "Image type: " << image.type() << endl;
     cout << "Rows: " << image.rows << "\nCols: " << image.cols << endl;
     vector<Mat> puzzlePieces = sliceIntoNineSquares(&image);
