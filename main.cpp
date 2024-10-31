@@ -10,24 +10,6 @@ using namespace cv;
 using namespace std;
 namespace fs = std::filesystem;
 
-
-int* constructRanges(int maxNumber, int bucketSize) {
-    int * buckets = new int[maxNumber/bucketSize];
-    int counter=0;
-    for (int i=0; i<=maxNumber; i+=bucketSize) {
-        if (i > maxNumber) {
-            break;
-        }
-        if (i == 0) {
-            continue;
-        }
-        buckets[counter] = i;
-        counter += 1;
-    }
-    return buckets;
-}
-
-
 vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
 {
     int rows = imageMatrix->rows;
@@ -36,7 +18,7 @@ vector<Mat> sliceIntoNineSquares(Mat* imageMatrix)
     int cell_width = cols / 3;
 
     vector<Mat> puzzlePieces;
-    puzzlePieces.reserve(9);  // Reserve space for 9 elements
+    puzzlePieces.reserve(9);
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
@@ -54,51 +36,41 @@ int main(int argc, char *argv[]) {
     fs::path filepath;
     try {
         if (argc != 2) {
-            std::cerr << "Usage: " << argv[0] << "<filepath>\n";
+            cerr << "Usage: " << argv[0] << "<filepath>\n";
             return 1;
         }
-        fs::path filepath = argv[1];
+        filepath = argv[1];
 
         if (!fs::exists(filepath)) {
-            std::cerr << "Error: Path doesn't exist\n";
+            cerr << "Error: Path doesn't exist\n";
             return 1;
         }
 
         std::cout << "Full path: " << filepath << "\n";
     } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+        cerr << "Error: " << e.what() << "\n";
         return 1;
     }
 
-    // Read the image file as
-    // imread("default.jpg");
-    QApplication a(argc, argv);
-
     Mat image = imread(filepath.string());
-    cout << "Image type: " << image.type() << endl;
-    cout << "Rows: " << image.rows << "\nCols: " << image.cols << endl;
     vector<Mat> puzzlePieces = sliceIntoNineSquares(&image);
 
-
+    QApplication a(argc, argv); // needs to be instantiated before other Qt objects
     MultiImageClass canvas(900, 900);
+
     QGraphicsView * view = canvas.startGame(puzzlePieces);
-
-    // Create a QMainWindow to contain the QGraphicsView
     QMainWindow mainWindow;
-    mainWindow.setCentralWidget(view); // Set the QGraphicsView as the central widget
-    mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3); // Resize the window
-    mainWindow.show(); // Show the window
+    mainWindow.setCentralWidget(view);
+    mainWindow.resize(SQUARE_LEN*3, SQUARE_LEN*3);
+    mainWindow.show();
 
-    // shuffle
     canvas.getBoardState()->shuffle(31);
 
     // Error Handling
-    // swars world
     if (image.empty()) {
-        cout << "Image File "
+        cerr << "Image File "
              << "Not Found" << endl;
 
-        // wait for any key press
         cin.get();
         return -1;
     }
