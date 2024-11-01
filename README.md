@@ -1,4 +1,4 @@
-# Puzzled Pictures
+# 8puzzl
 
 C++ implementation of the classic 8-puzzle game (https://en.wikipedia.org/wiki/Sliding_puzzle).
 Uses an image from your photo library.
