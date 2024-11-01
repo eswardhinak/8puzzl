@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(puzzledpictures VERSION 0.1 LANGUAGES CXX)
 enable_testing()
 
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -41,20 +42,20 @@ message(STATUS "OpenCV version: ${OpenCV_VERSION}")
 
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        src/main.cpp
+        src/mainwindow.cpp
+        src/mainwindow.h
+        src/mainwindow.ui
     )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(puzzledpictures
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        tst_maintest.cpp
-        multiimageclass.h multiimageclass.cpp
-        gametilepixmapitem.h gametilepixmapitem.cpp
-        boardstate.h boardstate.cpp
+        src/tst_maintest.cpp
+        src/multiimageclass.h src/multiimageclass.cpp
+        src/gametilepixmapitem.h src/gametilepixmapitem.cpp
+        src/boardstate.h src/boardstate.cpp
         README.md
     )
 # Define target properties for Android with Qt 6 as:

@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     fs::path filepath;
     try {
         if (argc != 2) {
-            cerr << "Usage: " << argv[0] << "<filepath>\n";
+            cerr << "Usage: " << argv[0] << " <filepath>\n";
             return 1;
         }
         filepath = argv[1];
