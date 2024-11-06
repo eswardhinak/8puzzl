@@ -1,52 +1,90 @@
 cmake_minimum_required(VERSION 3.5)
-
 project(puzzledpictures VERSION 0.1 LANGUAGES CXX)
+
+# Enable static linking globally
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+
 enable_testing()
-
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Include FetchContent for dependency management
+include(FetchContent)
+
+# Configure and fetch GTest
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
+)
+set(gtest_force_shared_crt OFF CACHE BOOL "" FORCE)
+set(BUILD_GMOCK ON CACHE BOOL "" FORCE)
+set(BUILD_GTEST ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# Configure Qt
+set(QT_STATIC ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG release-1.12.1
+# Download and extract a specific OpenCV version
+include(ExternalProject)
+ExternalProject_Add(opencv_external
+    URL https://github.com/opencv/opencv/archive/refs/tags/4.9.0.zip
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/opencv_install
+        -DBUILD_SHARED_LIBS=OFF
+        -DWITH_VTK=OFF
+        -DOPENCV_ENABLE_VTK=OFF
+        -DWITH_FFMPEG=OFF
+        -DWITH_GTK=OFF
+        -DWITH_QT=OFF
+        -DWITH_TIFF=ON  # Add this line
+        -DBUILD_TIFF=ON # And this line
+        -DOPENCV_ENABLE_NONFREE=OFF
+        -DBUILD_opencv_apps=OFF
+        -DBUILD_EXAMPLES=OFF
+        -DBUILD_PERF_TESTS=OFF
+        -DBUILD_TESTS=OFF
+        -DBUILD_opencv_python2=OFF
+        -DBUILD_opencv_python3=OFF
+        -DBUILD_opencv_java=OFF
+        -DBUILD_LIST=core,imgproc,imgcodecs,highgui
+        -DCMAKE_BUILD_TYPE=Release
+    BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
+    INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
 )
-find_package(GTest)
 
-find_package(OpenCV 4.9 REQUIRED)
-message(${OpenCV_INCLUDE_DIRS})
-message(STATUS "OpenCV_VERSION: ${OpenCV_VERSION}")
+# Create an imported target for OpenCV components
+add_library(opencv_core STATIC IMPORTED)
+add_library(opencv_imgproc STATIC IMPORTED)
+add_library(opencv_imgcodecs STATIC IMPORTED)
+add_library(opencv_highgui STATIC IMPORTED)
 
-if(OpenCV_FOUND)
-    include_directories(${OpenCV_INCLUDE_DIRS})
-else()
-    message(STATUS "OpenCV not found, using FetchContent to download it.")
-        FetchContent_Declare(
-          opencv
-          GIT_REPOSITORY https://github.com/opencv/opencv.git
-          GIT_TAG 4.x  # You can set a specific tag like 4.9.0
-        )
-        FetchContent_MakeAvailable(opencv)
-        set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui) # Add required OpenCV libraries
-endif()
-message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+# Set the location of the libraries after they're built
+set_target_properties(opencv_core PROPERTIES
+    IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/opencv_install/lib/libopencv_core.a
+)
+set_target_properties(opencv_imgproc PROPERTIES
+    IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/opencv_install/lib/libopencv_imgproc.a
+)
+set_target_properties(opencv_imgcodecs PROPERTIES
+    IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/opencv_install/lib/libopencv_imgcodecs.a
+)
+set_target_properties(opencv_highgui PROPERTIES
+    IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/opencv_install/lib/libopencv_highgui.a
+)
 
-
+# Project sources
 set(PROJECT_SOURCES
-        src/main.cpp
-        src/mainwindow.cpp
-        src/mainwindow.h
-        src/mainwindow.ui
-    )
+    src/main.cpp
+    src/mainwindow.cpp
+    src/mainwindow.h
+    src/mainwindow.ui
+)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(puzzledpictures
@@ -58,17 +96,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         src/boardstate.h src/boardstate.cpp
         README.md
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET puzzledpictures APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
         add_library(puzzledpictures SHARED
             ${PROJECT_SOURCES}
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(puzzledpictures
             ${PROJECT_SOURCES}
@@ -76,25 +108,35 @@ else()
     endif()
 endif()
 
+# Make sure OpenCV is built before our main target
+add_dependencies(puzzledpictures opencv_external)
+
+# Add OpenCV include directories
+target_include_directories(puzzledpictures PRIVATE
+    ${CMAKE_BINARY_DIR}/opencv_install/include/opencv4
+)
+
+# Link libraries
 target_link_libraries(puzzledpictures PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    ${OpenCV_LIBS}
+    opencv_core
+    opencv_imgproc
+    opencv_imgcodecs
+    opencv_highgui
     GTest::gtest
     GTest::gtest_main
     GTest::gmock
-    GTest::gmock_main)
+    GTest::gmock_main
+)
 
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.puzzledpictures)
+    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.puzzledpictures)
 endif()
+
 set_target_properties(puzzledpictures PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    # MACOSX_BUNDLE TRUE
-    # WIN32_EXECUTABLE TRUE
 )
 
 include(GNUInstallDirs)
@@ -107,11 +149,3 @@ install(TARGETS puzzledpictures
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(puzzledpictures)
 endif()
-
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach(dir ${dirs})
-  message(STATUS "dir='${dir}'")
-endforeach()
-
-
