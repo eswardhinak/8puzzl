@@ -1,7 +1,17 @@
-# Puzzled Pictures
+# 8puzzl
 
 C++ implementation of the classic 8-puzzle game (https://en.wikipedia.org/wiki/Sliding_puzzle).
 Uses an image from your photo library.
+
+## How to build (for now)
+1. Download and install qt here
+1. `touch build`
+2.  `cd build`
+3. `cmake ../`
+4. `make`
+
+
+
 
 ## Todo:
 
