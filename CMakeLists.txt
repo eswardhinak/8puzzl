@@ -1,3 +1,4 @@
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 cmake_minimum_required(VERSION 3.5)
 project(puzzledpictures VERSION 0.1 LANGUAGES CXX)
 
