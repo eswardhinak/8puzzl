@@ -9,8 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Configure Qt
 set(QT_STATIC ON)
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
 
 set (OpenCV_DIR /usr/local/Cellar/opencv/4.9.0_12/lib/cmake/opencv4)
 find_package(OpenCV REQUIRED)
@@ -33,15 +33,11 @@ set(PROJECT_SOURCES
         src/boardstate.h src/boardstate.cpp
     )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(puzzledpictures
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        README.md
-    )
-else()
-    message(FATAL_ERROR, "Qt version >= 6 required")
-endif()
+qt_add_executable(puzzledpictures
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+    README.md
+)
 
 
 target_link_libraries(puzzledpictures PRIVATE
