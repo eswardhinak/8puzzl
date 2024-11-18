@@ -105,7 +105,6 @@ bool BoardState::swap(int index, bool checkSolution) {
         current[index] = current[whiteSpaceIndex];
         current[whiteSpaceIndex] = temp;
 
-        std::cout<<whiteSpaceIndex<<std::endl;
         whiteSpaceIndex = index;
 
     }

@@ -8,7 +8,6 @@ GameTilePixMapItem::GameTilePixMapItem(const QPixmap &pixmap, int initialIndex, 
 
 // Mouse press event
 void GameTilePixMapItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    std::cout << "Mouse press" << std::endl;
     if (event->button() == Qt::LeftButton) {
         boardState->swap(currentIndex);
     } else if (event->button() == Qt::RightButton) {}
