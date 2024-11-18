@@ -2,7 +2,7 @@
 #define GAMETILEPIXMAPITEM_H
 
 #include <iostream>
-#include <QGraphicsPixMapItem>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 
 class BoardState;
