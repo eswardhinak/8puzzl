@@ -45,4 +45,20 @@ target_link_libraries(puzzledpictures PRIVATE
     ${OpenCV_LIBS}
 )
 
+# Installation rules
+include(GNUInstallDirs)
+install(TARGETS puzzledpictures
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# macOS specific bundle settings
+set_target_properties(puzzledpictures PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_GUI_IDENTIFIER "com.yourdomain.puzzledpictures"
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+)
+
+
 qt_finalize_executable(puzzledpictures)
