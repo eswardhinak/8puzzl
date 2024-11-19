@@ -12,7 +12,7 @@ set(QT_STATIC ON)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 
-set (OpenCV_DIR /usr/local/Cellar/opencv/4.9.0_12/lib/cmake/opencv4)
+set (OpenCV_DIR /usr/local/Cellar/opencv/4.9.0_12/lib/cmake/opencv4) # update this based on location of opencv install
 find_package(OpenCV REQUIRED)
 
 if(OpenCV_FOUND)
@@ -44,21 +44,5 @@ target_link_libraries(puzzledpictures PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     ${OpenCV_LIBS}
 )
-
-# Installation rules
-include(GNUInstallDirs)
-install(TARGETS puzzledpictures
-    BUNDLE DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-# macOS specific bundle settings
-set_target_properties(puzzledpictures PROPERTIES
-    MACOSX_BUNDLE TRUE
-    MACOSX_BUNDLE_GUI_IDENTIFIER "com.yourdomain.puzzledpictures"
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-)
-
 
 qt_finalize_executable(puzzledpictures)
