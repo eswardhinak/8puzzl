@@ -1,6 +1,7 @@
 # 8puzzl
 
-C++ implementation of the classic 8-puzzle game (https://en.wikipedia.org/wiki/Sliding_puzzle).
+C++ implementation of the classic 8-puzzle game (https://en.wikipedia.org/wiki/Sliding_puzzle). The game uses an image you specify (tested with JPEG and PNG).
+It slices the image into pieces and shuffles them.
 
 `./puzzledpictures "<image file path>"`
 
